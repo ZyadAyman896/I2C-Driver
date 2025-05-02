@@ -52,7 +52,32 @@ void I2C_vInit(u32 SCL_Frequency)
 
 
 
-void I2C_vStart();
+void I2C_vStart()
+{
+    /* variable for storing the status code */
+    u8 status_code ;
+    
+    /*  Start Condition   */
+    I2C_START_CONDITION() ; 
+
+    /*  Enabling The I2C  */
+    I2C_ENABLE() ;
+
+    /*  Clearing the TWINT Flag   */
+    I2C_CLEAR_TWINT_FLAG() ;
+    
+    /*  Waiting on the TWINT Flag   */
+    while( !( TWCR & (1 << TWINT) ) ) ;
+    
+    /*  Reading the Status Code */
+    status_code = ( TWCR & 0xF8 ) ;
+    
+    if( status_code != 0x08 && status_code != 0x10)
+    {
+        /*  Handle the error if needed   */
+    }
+
+}
 
 
 

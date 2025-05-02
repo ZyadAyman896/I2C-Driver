@@ -160,5 +160,10 @@ u8 I2C_ReadByte_NACK();
 /*  I2C_ENABLE()  */
 #define I2C_ENABLE() ( TWCR = (1 << TWEN) )
 
+#define I2C_START_CONDITION()  ( TWCR = (1 << TWSTA) )
+
+#define I2C_CLEAR_TWINT_FLAG() ( TWCR = (1 << TWINT) )
+
+
 
 #endif /* I2C_H */
