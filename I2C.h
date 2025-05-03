@@ -133,7 +133,7 @@ void I2C_vStop();
  * param : data The byte to be transmitted to the slave.
  * Loads the byte into TWDR, clears TWINT, and waits for transmission to complete.
  */
-void I2C_writeByte(u8 data);
+void I2C_writeByte(u8 Data_Byte);
 
 /**
  * brief : Reads a byte from the I2C bus and sends ACK after reception.

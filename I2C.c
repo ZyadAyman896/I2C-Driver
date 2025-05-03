@@ -82,12 +82,86 @@ void I2C_vStart()
 
 
 
-void I2C_vStop();
+void I2C_vStop()
+{
+    /*
+        Steps to Send a STOP Condition:
+
+    1- Set TWSTO (Stop Condition bit) and TWEN (Enable TWI) in the TWCR register.
+
+    2- Also set TWINT to 1 to trigger the operation.
+
+    3- (Optional) Wait a short time to ensure the STOP condition is sent before another I2C action.
+    
+    */
+    
+    /* Send STOP condition  */
+    TWCR = (1 << TWSTO) | (1 << TWEN) | (1 << TWINT);
+
+    /* (Optional) Small delay to allow STOP to complete before next action  */
+    while (TWCR & (1 << TWSTO));  /* Wait until STOP bit is cleared by hardware */
 
 
 
 
-void I2C_writeByte();
+
+}
+
+
+
+
+void I2C_writeByte(u8 Data_Byte)
+{
+
+    u8 status; 
+    /*
+
+    Steps:
+
+    1- Load the data into TWDR
+
+    2- Clear TWINT to start transmission
+
+    3- Wait until TWINT is set again
+
+    4- (Optionally) Check TWSR for 0x28 (data transmitted, ACK received)
+    
+    */
+    
+    /*  Loading The Data in the TWDR Register */
+    TWDR = Data_Byte ;
+    
+    /*  Enable I2C  */
+    I2C_ENABLE();
+    
+    /*  Clear The Interrupt Flag  */
+    I2C_CLEAR_TWINT_FLAG();
+    
+    /*  Wait until TWINT is set again */
+    while (!(TWCR & (1 << TWINT)));
+
+    /*  Check TWSR for 0x28 (data transmitted, ACK received)  */
+    status = ( TWSR & 0xF8 ) ;
+    
+    /*  
+      0x18 = SLA+W transmitted and ACK received
+
+      0x28 = Data byte transmitted and ACK received 
+    */
+    
+    if (status != 0x28 && status != 0x18)  /* Data or SLA+W ACK */
+    {
+        /* Optionally handle NACK or error  */
+    }
+
+    return status;
+    
+    
+    
+
+
+
+}
 
 
 
