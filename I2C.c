@@ -166,9 +166,60 @@ void I2C_writeByte(u8 Data_Byte)
 
 
 
-u8 I2C_ReadByte_ACK();
+u8 I2C_ReadByte_ACK()
+{
+
+    /*
+
+    Steps:
+
+    Set TWCR with TWEA (Enable ACK) + TWEN + TWINT
+
+    Wait for TWINT
+
+    Return value in TWDR
+
+    */
+    
+    I2C_ENABLE() ;
+    
+    I2C_CLEAR_TWINT_FLAG();
+    
+    TWCR = (1 << TWEA) ;  /* ACK after receive  */
+    
+    while ( !( TWCR & (1 << TWINT) ) );
+    
+    return TWDR ;
+        
+    
+
+
+}
 
 
 
 
-u8 I2C_ReadByte_NACK();
+u8 I2C_ReadByte_NACK()
+{
+
+    /*
+    Steps:
+
+    Set TWCR with only TWEN + TWINT (no TWEA)
+
+    Wait for TWINT
+
+    Return value in TWDR
+    */
+
+
+    I2C_ENABLE();
+    
+    I2C_CLEAR_TWINT_FLAG(); /* NACK after receive */s
+    
+    while ( !( TWCR & (1 << TWINT) ) );
+    
+    return TWDR;
+
+
+}
